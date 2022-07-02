@@ -1,0 +1,5 @@
+*.dSYM
+a
+a.out
+tmp.cpp
+.DS_Store
