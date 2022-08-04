@@ -1,58 +1,81 @@
-#include <iostream>
-#include <algorithm>
-#include <cstring>
-#include <vector>
-#include <utility>
-#include <set>
-#include <queue>
+#include <bits/stdc++.h>
 #define int long long
-#define pb push_back
+#define rep(i,j,k) for (int i=j; i<=k; i++)
+#define de(x) cout << #x << "=" << x << ", "
+#define dd cout << '\n';
 #define ff first
 #define ss second
-#define minamisan ios::sync_with_stdio(0), cin.tie(0);
+#define pb push_back
+#define mothersrosario ios::sync_with_stdio(0), cin.tie(0);
 using namespace std;
 typedef pair<int,int> pii;
 
 const int N = 1e5+10, M = 1e9+7;
 
 int n, m;
-vector<pii> G[N]; //{w,v}
+vector<pii> G[N]; // {w, v}
 
-priority_queue<pii,vector<pii>,greater<pii>> pq;
-int d[N], sum[N], mx[N], mn[N];
-void dijks (int op){
-    memset(d,0x3f,sizeof(d));
-    d[op] = 0;
-    sum[op] = 1;
-    pq.push({0,op});
+int dis[N], mnstep[N], mxstep[N], posb[N], vis[N];
+vector<int> topo;
 
-    while (pq.size()){
-        pii u = pq.top();
+void dijks()
+{
+    priority_queue<pii, vector<pii>, greater<pii>> pq; //{dis, u}
+    pq.push({0,1});
+    memset(dis, 0x3f, sizeof(dis));
+    memset(mnstep,0x3f,sizeof(mnstep)), mnstep[1] = 0;
+    mxstep[1] = 0;
+    posb[1] = 1;    
+    dis[1] = 0;
+    while(pq.size())
+    {
+        int u = pq.top().ss, d = pq.top().ff;
         pq.pop();
-        for (auto e: G[u.ss]){
-            if (d[e.ss] > u.ff+e.ff){
-                d[e.ss] = u.ff+e.ff;
-                sum[e.ss] = sum[u.ss];
-                mx[e.ss] = mx[u.ss]+1;
-                mn[e.ss] = mn[u.ss]+1;
-                pq.push({d[e.ss], e.ss});
+        if (!vis[u])
+        {
+            vis[u] = 1;
+            topo.pb(u);
+            for (auto e: G[u])
+            {
+                if (dis[e.ss] > d+e.ff)
+                {
+                    dis[e.ss] = d+e.ff;
+                    pq.push({dis[e.ss], e.ss});
+                }
             }
-            else if (d[e.ss] == u.ff+e.ff){
-                sum[e.ss] = (sum[e.ss] + sum[u.ss])%M;
-                mx[e.ss] = max(mx[e.ss], mx[u.ss]+1);
-                mn[e.ss] = min(mn[e.ss], mn[u.ss]+1);
+        }
+        
+    }
+}
+
+void dp()
+{
+    for (auto u: topo)
+    {
+        for (auto e: G[u])
+        {
+            int w = e.ff, v = e.ss;
+            if (dis[v] == w+dis[u])
+            {
+                mnstep[v] = min(mnstep[v], mnstep[u]+1);
+                mxstep[v] = max(mxstep[v], mxstep[u]+1);
+                posb[v] = (posb[v]+posb[u])%M;
             }
         }
     }
 }
 
-signed main(){
+signed main()
+{
+    mothersrosario
     cin >> n >> m;
-    while (m--){
+    rep(i,1,m)
+    {
         int u, v, w;
         cin >> u >> v >> w;
         G[u].pb({w,v});
     }
-    dijks(1);
-    cout << d[n] << ' ' << sum[n] << ' ' << mn[n] << ' ' << mx [n] << '\n';
+    dijks();
+    dp();
+    cout << dis[n] << ' ' << posb[n] << ' ' << mnstep[n] << ' ' << mxstep[n] << '\n';
 }

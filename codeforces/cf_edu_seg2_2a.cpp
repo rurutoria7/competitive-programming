@@ -31,18 +31,6 @@ struct Seg
     {
         tr[u] = min(tr[u<<1], tr[u<<1|1]);
     }
-/*     void build (int u, int l, int r) //assign to leafs, update u
-    {
-        if (l == r)
-            tr[u] = a[l];
-        else
-        {
-            int m = (l+r)/2;
-            build(u<<1,l,m);
-            build(u<<1|1,m+1,r);
-            pull(u);
-        }
-    } */
     void modify (int ql, int qr, int x, int u=1, int l=1, int r=n)
     {
         if (ql>r || l>qr) return;

@@ -1,87 +1,134 @@
+#pragma GCC optimize("Ofast,unroll-loops,no-stack-protector,fast-math")
 #include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#define rep(i,j,k) for (int i=j; i<=k; i++)
 #define de(x) cout << #x << "=" << x << ", "
-#define dend cout << '\n'
-#define Eriri ios::sync_with_stdio(0), cin.tie(0);
-#define F first
-#define S second
-#define getd(u) (d[u.w[1]][u.w[2]][u.w[3]][u.w[4]][u.w[5]])
+#define dd cout << '\n';
+#define ff first
+#define ss second
+#define pb push_back
+#define lyx_my_wife ios::sync_with_stdio(0), cin.tie(0);
+using namespace __gnu_pbds;
 using namespace std;
-typedef pair<int,int> Pii;
 
-int n, res, t;
-int d[55][55][55][55][55], v[6];
-struct Cups {int w[6];};
-queue<Cups> q;
+const int N = 6, V = 5e3;
 
-inline bool suc (Cups c)
-{
-	for (int i=1; i<=n; i++)
-		if (c.w[i] == t)
-			return 1;
-	return 0;
-}
-inline Cups clear (Cups c, int k)
-{
-	c.w[k] = 0;
-	return c;
-}
-inline Cups fill (Cups c, int k)
-{
-	c.w[k] = v[k];
-	return c;
-}
-inline Cups move (Cups c, int j, int k)
-{
-	if (c.w[j] <= v[k] - c.w[k])
-		c.w[k] += c.w[j], c.w[j] = 0;
-	else
-	{
-		c.w[j] -= v[k] - c.w[k];
-		c.w[k] = v[k];
-	}
-	return c;
-}
+int n, cap[N], tar;
 
-int bfs ()
+struct Node
 {
-	q.push({{0,0,0,0,0,0}});
-	d[0][0][0][0][0] = 1;
-	while (!q.empty())
-	{
-		Cups u = q.front();
-		q.pop();
-		if (suc(u))
-			return getd(u)-1;
-		for (int i=1; i<=n; i++)
-		{
-			for (int j=1; j<=n; j++)
-			{
-				if (i == j)
-				{
-					Cups v = clear(u,i);
-					if (!getd(v))
-						getd(v) = getd(u)+1, q.push(v);
-					v = fill(u,m i);
-					if (!getd(v))
-						getd(v) = getd(u)+1, q.push(v);					
-				}
-				else
-				{
-					Cups v = move(u,i,j);
-					if (!getd(v))
-						getd(v) = getd(u) + 1, q.push(v);
-				}
-			}
-		}
-	}
-	return -1;
+    int w;
+    inline int get(int i)
+    {
+        int tmp = w;
+        rep(j,1,i-1) tmp /= 51;
+        return tmp % 51;
+    }
+    inline void set(int i, int x)
+    {
+        int k = 1;
+        rep(j,1,i-1) k*=51;
+        w -= get(i)*k;
+        w += x*k;
+    }
+    inline int success()
+    {
+        rep(i,1,n) if (get(i) == tar) return 1;
+        return 0;
+    }
+};
+
+inline Node fill (const Node &x, int i)
+{
+    Node res = x;
+    res.set(i,cap[i]);
+    return res;
+}
+inline Node clean (const Node &x, int i)
+{
+    Node res = x;
+    res.set(i,0);
+    return res;
+}
+inline Node move (const Node &x, int i, int j)
+{
+    Node res = x;
+    int moved = min(res.get(i), cap[j] - res.get(j));
+    res.set(i,res.get(i)-moved);
+    res.set(j,res.get(j)+moved);
+    return res;
 }
 
-int main()
+struct Queue
 {
-	cin >> n;
-	for (int i=1; i<=n; i++)
-		cin >> v[i];
-	cin >> t;
-	cout << bfs() << '\n';
+    int que[V], l, r, sz;
+    int pop() { return sz--, que[l++]; }
+    void push(int x) { sz++, que[r++] = x; }
+} q;
+
+unordered_set<int> dis;
+
+inline void go(Node v, int d)
+{
+    if (v.success())
+    {
+        cout << d+1 << endl;
+        exit(0);
+    }
+    if (dis.find(v.w) == dis.end())
+    {
+        dis.insert(v.w);
+        q.push(v.w);
+    }
+}
+
+void bfs()
+{   
+    q.push(0);
+
+    int d = 0;
+    while(1)
+    {
+        int cnt = q.sz;
+        while (cnt--)
+        {
+            Node u = {q.pop()};
+
+            rep(i,1,n)
+            {
+                rep(j,1,n)
+                {
+                    if (i == j)
+                    {
+                        go(fill(u,i), d);
+                        go(clean(u,i), d);
+                    }
+                    else
+                    {
+                        go(move(u,i,j), d);
+                    }
+                }
+            }
+        }
+        d++;
+    }
+}
+
+int sol_exist()
+{
+    int d = cap[1], mx = 0;
+    rep(i,1,n) d = __gcd(d, cap[i]), mx = max(cap[i], mx);
+    return (tar%d == 0 && mx>=tar);
+}
+
+signed main()
+{
+    cin >> n;
+    rep(i,1,n) cin >> cap[i];
+    cin >> tar;
+
+    if (sol_exist())
+        bfs();
+    else
+        cout << -1 << '\n';
 }
