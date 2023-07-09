@@ -10,25 +10,30 @@
 using namespace std;
 typedef pair<int,int> pii;
 
-const int N = 1010;
+const int N = 2e5+10;
 
-int n, m, vis[N][N];
-char G[N][N];
-
-int dfs(int i, int j)
-{
-	if (i<1 || i>n || j<1 || j>m || G[i][j]=='#' || vis[i][j])
-		return 0;
-	vis[i][j] = 1;
-	dfs(i+1, j), dfs(i-1, j), dfs(i, j+1), dfs(i, j-1);
-	return 1;		
-}
+pii a[N];
+int n, k;
+multiset<int> s;
 
 signed main()
 {
-	cin >> n >> m;
-	rep(i,1,n) rep(j,1,m) cin >> G[i][j];
+	cin >> n >> k;
+	rep(i,1,n) cin >> a[i].ff >> a[i].ss;
+	sort(a+1, a+1+n, [](pii x, pii y){
+		return x.ss < y.ss;
+	});
+	rep(i,1,k) s.insert(0);
 	int ans = 0;
-	rep(i,1,n) rep(j,1,m) ans += dfs(i,j);
+	rep(i,1,n)
+	{
+		if (*s.begin() <= a[i].ff)
+		{
+			auto it = prev(s.upper_bound(a[i].ff));
+			s.erase(it);
+			s.insert(a[i].ss);
+			ans++;
+		}
+	}
 	cout << ans << '\n';
 }

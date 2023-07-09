@@ -5,35 +5,36 @@
 #define ss second
 #define pb push_back
 #define de(x) cout << #x << '=' << x << ", "
-#define dd cout << '\n';
-#define liyuu_my_wife ios::sync_with_stdio(0), cin.tie(0);
+#define dd cout << endl;
+#define lyx ios::sync_with_stdio(0), cin.tie(0);
 using namespace std;
 typedef pair<int,int> pii;
 
 const int N = 1e5+10;
 
+int n, m, dis[N];
 vector<pii> G[N];
-int n, m;
 
-int dis[N];
-void dijks (int rt)
+void dijks()
 {
-	priority_queue<pii,vector<pii>,greater<pii>> pq;
-	memset(dis,0x3f,sizeof(dis));
-	dis[rt] = 0;
-	pq.push({dis[rt],rt});
+	priority_queue<pii, vector<pii>, greater<pii>> pq;	
+	memset(dis, 0x3f, sizeof(dis));
+	pq.push({0, 1});
+	dis[1] = 0;
 	while(pq.size())
 	{
 		int u = pq.top().ss;
 		int d = pq.top().ff;
 		pq.pop();
-		if (dis[u] < d) continue;
+		if (d > dis[u]) continue;
+
 		for (auto e: G[u])
 		{
-			if (dis[e.ss] > d+e.ff)
+			int v = e.ss, w = e.ff;
+			if (d + w < dis[v])
 			{
-				dis[e.ss] = d+e.ff;
-				pq.push({dis[e.ss],e.ss});
+				dis[v] = d + w;
+				pq.push({dis[v], v});
 			}
 		}
 	}
@@ -41,16 +42,18 @@ void dijks (int rt)
 
 signed main()
 {
-	liyuu_my_wife
+	lyx
 	cin >> n >> m;
 	rep(i,1,m)
 	{
 		int u, v, w;
 		cin >> u >> v >> w;
-		G[u].pb({w,v});
+		G[u].pb({w, v});
 	}
-	dijks(1);
+	dijks();
 	rep(i,1,n)
-		cout << dis[i] << ' ' ;
+	{
+		cout << dis[i] << ' ';
+	}
 	cout << '\n';
 }

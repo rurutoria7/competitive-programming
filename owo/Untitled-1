@@ -1,8 +1,0 @@
-/*
-up left corner is black
-white cnt for start with black a[i]/2
-
-1. split componet
-2. calc every components's b&w, up left corner is black
-3. for every componet, take min(b, w);
-*/

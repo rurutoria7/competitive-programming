@@ -13,31 +13,34 @@ typedef pair<int,int> pii;
 
 const int N = 2e5+10;
 
-vector<int> G[N];
-int n, dp[N];
-
-int dfs(int u)
-{
-	int &res = dp[u];
-	res = 1;
-
-	for (auto v: G[u])
-	{
-		res += dfs(v);
-	}
-	return res;
-}
+set<pii> s;
+int n, m, a[N];
 
 signed main()
 {
-	cin >> n;
-	rep(i,2,n)
+	roadroller
+	cin >> n >> m;
+	rep(i,1,n)
 	{
-		int p;
-		cin >> p;
-		G[p].pb(i);
+		int x;
+		cin >> x;
+		s.insert({x, i});
 	}
-	dfs(1);
-	rep(i,1,n) cout << dp[i]-1 << ' ';
-	cout << '\n';
+
+	rep(i,1,m)
+	{
+		int q;
+		cin >> q;
+		auto lwb = s.lower_bound({q, 0});
+		if (lwb == s.end()) cout << 0 << '\n';
+		else
+		{
+			cout << lwb->ss << '\n';
+			pii ouo = *lwb;
+			ouo.ff -= q;
+			s.erase(lwb);
+			s.insert(ouo);
+		}
+	}	
+
 }

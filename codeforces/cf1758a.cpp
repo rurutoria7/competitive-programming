@@ -6,17 +6,24 @@
 #define pb push_back
 #define de(x) cout << #x << '=' << x << ", "
 #define dd cout << endl;
-#define roadroller ios::sync_with_stdio(0), cin.tie(0);
-#define mp make_pair
+#define lyx ios::sync_with_stdio(0), cin.tie(0);
 using namespace std;
 typedef pair<int,int> pii;
 
-map<int, vector<pii>> pr;
-int n, a[N], x;
+int t;
 
 signed main()
 {
-	cin >> n >> x;
-	rep(i,1,n)
-		cin >> a[i];
+	cin >> t;
+	while (t--)
+	{
+		string s;
+		cin >> s;
+		cout << s;
+		for (int i=s.size()-1; i>=0; i--)
+		{
+			cout << s[i];
+		}
+		cout << '\n';
+	}
 }

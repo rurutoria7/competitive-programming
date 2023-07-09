@@ -12,16 +12,22 @@ typedef pair<int,int> pii;
 
 const int N = 2e5+10;
 
-int a[N], n, x;
+int n, x;
+pii a[N];
 
 signed main()
 {
     cin >> n >> x;
-    rep(i,1,n) cin >> a[i], a[i] += a[i-1];
-    set<int> s;
+    rep(i,1,n) cin >> a[i].ff, a[i].ss = i;
+    sort(a+1, a+1+n);
     rep(i,1,n)
     {
-        if (s.lower_bound)
+        int j = lower_bound(a+i+1, a+1+n, make_pair(x-a[i].ff, 0LL)) - a;
+        if (j<=n && a[i].ff + a[j].ff == x)
+        {
+            cout << a[i].ss << ' ' << a[j].ss << '\n';
+            return 0;
+        }
     }
-    //a[r] - a[l-1] == x
+    cout << "IMPOSSIBLE\n";
 }

@@ -9,18 +9,18 @@
 #define minamisan ios::sync_with_stdio(0), cin.tie(0);
 using namespace std;
 typedef pair<int,int> pii;
-
+ 
 const int N = 510, X = N*N/2, M = 1e9+7;
-
-int dp[N][X], n;
-
+ 
+int dp[2][X], n;
+ 
 int qpow (int i, int j){
 	int ans = 1;
 	for (; j; j>>=1, i=i*i%M)
 		if (j&1) ans = ans*i%M;
 	return ans;
 }
-
+ 
 signed main(){
 	cin >> n;
 	if (n*(n+1)%4){
@@ -32,11 +32,11 @@ signed main(){
 	dp[0][0] = 1;
 	rep(i,1,n){
 		rep(j,0,X-1){
-			dp[i][j] = dp[i-1][j];
+			dp[i%2][j] = dp[(i-1)%2][j];
 			if (j >= i){
-				dp[i][j] = (dp[i][j] + dp[i-1][j-i])%M;
+				dp[i%2][j] = (dp[i%2][j] + dp[(i-1)%2][j-i])%M;
 			}
 		}
 	}
-	cout << dp[n][n*(n+1)/4]*qpow(2,M-2)%M << '\n';
+	cout << dp[n%2][n*(n+1)/4]*qpow(2,M-2)%M << '\n';
 }

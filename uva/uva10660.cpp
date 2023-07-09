@@ -10,18 +10,33 @@
 using namespace std;
 typedef pair<int,int> pii;
 
-const int N = 2e5+10;
+const int N = 5;
 
-int a[N], n, x;
+int t, n;
+vector<pair<pii, int>> p;
+vector<int> path, ans;
+int ans, owo;
+
+void dfs (int num, int st)
+{
+    if (num == 0)
+    {
+        
+    }
+}
 
 signed main()
 {
-    cin >> n >> x;
-    rep(i,1,n) cin >> a[i], a[i] += a[i-1];
-    set<int> s;
-    rep(i,1,n)
+    cin >> t;
+    while(t--)
     {
-        if (s.lower_bound)
+        p.clear();
+        cin >> n;
+        rep(i,1,n)
+        {
+            int x, y, z;
+            p.pb({{x,y},z});
+        }
+        dfs(5, 0);
     }
-    //a[r] - a[l-1] == x
 }

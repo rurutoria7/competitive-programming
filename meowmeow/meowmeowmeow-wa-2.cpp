@@ -11,33 +11,27 @@
 using namespace std;
 typedef pair<int,int> pii;
 
-const int N = 2e5+10;
+const int N = 1e5+10;
 
-vector<int> G[N];
-int n, dp[N];
-
-int dfs(int u)
-{
-	int &res = dp[u];
-	res = 1;
-
-	for (auto v: G[u])
-	{
-		res += dfs(v);
-	}
-	return res;
-}
+multiset<int> ed;
+int n;
+pii a[N];
 
 signed main()
 {
 	cin >> n;
-	rep(i,2,n)
+	rep(i,1,n) cin >> a[i].ff >> a[i].ss;
+	sort(a+1, a+1+n);
+	rep(i,1,n)
 	{
-		int p;
-		cin >> p;
-		G[p].pb(i);
+		if (ed.empty() || a[i].ss < *ed.begin()) ed.insert(a[i].ss);
+		else
+		{
+			auto it = prev(ed.upper_bound(a[i].ss));
+			ed.erase(it);
+			ed.insert(a[i].ss);
+		}
 	}
-	dfs(1);
-	rep(i,1,n) cout << dp[i]-1 << ' ';
-	cout << '\n';
+	assert(ed.size() <= 4);
+	cout << ed.size() << '\n';
 }

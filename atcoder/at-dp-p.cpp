@@ -4,28 +4,27 @@
 #define ff first
 #define ss second
 #define pb push_back
-#define mp make_pair
 #define de(x) cout << #x << '=' << x << ", "
 #define dd cout << endl;
 #define roadroller ios::sync_with_stdio(0), cin.tie(0);
 using namespace std;
 typedef pair<int,int> pii;
 
-const int N = 2e5+10;
+const int N = 1e5+10, M = 1e9+7;
 
 vector<int> G[N];
-int n, dp[N];
+int dp[N][2], n;
 
-int dfs(int u)
+void dfs(int u, int p)
 {
-	int &res = dp[u];
-	res = 1;
-
+	dp[u][0] = dp[u][1] = 1;
 	for (auto v: G[u])
 	{
-		res += dfs(v);
+		if (v == p) continue;
+		dfs(v, u);
+		dp[u][0] = (dp[u][0]*(dp[v][0]+dp[v][1]))%M;
+		dp[u][1] = (dp[u][1]*dp[v][0])%M;
 	}
-	return res;
 }
 
 signed main()
@@ -33,11 +32,11 @@ signed main()
 	cin >> n;
 	rep(i,2,n)
 	{
-		int p;
-		cin >> p;
-		G[p].pb(i);
+		int u, v;
+		cin >> u >> v;
+		G[u].pb(v);
+		G[v].pb(u);
 	}
-	dfs(1);
-	rep(i,1,n) cout << dp[i]-1 << ' ';
-	cout << '\n';
+	dfs(1,1);
+	cout << (dp[1][0] + dp[1][1])%M << '\n';
 }

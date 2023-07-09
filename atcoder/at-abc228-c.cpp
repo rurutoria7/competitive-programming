@@ -10,18 +10,19 @@
 using namespace std;
 typedef pair<int,int> pii;
 
-const int N = 2e5+10;
+const int N = 1e5+10;
 
-int a[N], n, x;
+int n, k, pre[1210], a[N];
 
 signed main()
 {
-    cin >> n >> x;
-    rep(i,1,n) cin >> a[i], a[i] += a[i-1];
-    set<int> s;
+    cin >> n >> k;
     rep(i,1,n)
     {
-        if (s.lower_bound)
+        int x;
+        rep(j,1,3) cin >> x, a[i] += x;
+        pre[a[i]]++;
     }
-    //a[r] - a[l-1] == x
+    rep(i,0,1200) pre[i] += pre[i-1];
+    rep(i,1,n) cout << (pre[1200] - pre[a[i]+300] < k? "Yes":"No") << '\n';
 }
